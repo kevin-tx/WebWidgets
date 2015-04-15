@@ -1,0 +1,41 @@
+﻿.wb-resizable
+{
+    position:relative;/*可根据需求覆盖，但只能为relative，absolute*/
+}
+
+.wb-resizble-hand
+{
+    position:absolute;
+    display:block;
+    font-size:0.1px;
+}
+
+.wb-resizable-e
+{
+    top:0px;
+    width:7px;
+    height:100%;
+    right:-5px;
+    cursor:e-resize;
+    z-index:90;
+}
+
+.wb-resizable-s
+{
+    left:0px;
+    height:7px;
+    width:100%;
+    bottom:-5px;
+    cursor:s-resize;
+    z-index:90;
+}
+
+.wb-resizable-se
+{
+    width:7px;
+    height:7px;
+    right:-5px;
+    bottom:-5px;
+    cursor:se-resize;
+    z-index:91;
+}

@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title></title>
+    <style type="text/css">
+        .dragItem
+        {
+            border: solid 1px #EF6655;
+            background-color: #F9DA42;
+            text-align: center;
+            width: 100px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .cusHelper
+        {
+            padding: 2px;
+            border: solid 1px #888;
+            background-color: #eee;
+            font-size: 12px; /*filter:alpha(opacity=50);
+				-moz-opacity:0.5;
+				-khtml-opacity: 0.5;
+				opacity: 0.5;*/
+        }
+        #log
+        {
+            width: 600px;
+            height: 800px;
+            border: solid 1px #000;
+            overflow: auto;
+        }
+        .drop-inDropArea
+        {
+            background-color: #FFF398;
+            border: solid 1px #DE5B24;
+        }
+        .drop-droped
+        {
+            background-color: #D3EDFA;
+            border: solid 1px #0F8BC8;
+        }
+        #dropContainer
+        {
+            position: relative;
+            float: right;
+        }
+        #dropContainer > div
+        {
+            width: 200px;
+            height: 200px;
+            border: solid 1px #888;
+        }
+    </style>
+    <script src="../jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="../widget.base.js" type="text/javascript"></script>
+    <script src="wbDragable.js" type="text/javascript"></script>
+    <script src="wbDropable.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            var dragLogSwitch = true;
+            $(".dragItem").wbDragable({
+                appendTo: "body",
+                helperOpacity: 0.5,
+                canDrop: true,
+                //helper: "clone",
+                /*helper: function(ev){
+                return $("<span class=\"cusHelper\">"+$(ev.target).html()+"</span>");
+                },*/
+                revert: true,
+                dragStart: function (e, mPostion, dragObj, helper) {
+                    $(document).disableSelection();
+                    $("#log").html("dragStart:(x:" + mPostion.x + ",y:" + mPostion.y + ");dragOb:" + dragObj.attr("id") + ";helper:" + helper.html() + ";<br/>" + $("#log").html());
+                    dragLogSwitch = true;
+                },
+                draging: function (e, mPostion, dragObj, helper) {
+                    if (dragLogSwitch) {
+                        $("#log").html("draging:(x:" + mPostion.x + ",y:" + mPostion.y + ");dragOb:" + dragObj.attr("id") + ";helper:" + helper.html() + ";<br/>" + $("#log").html());
+                        dragLogSwitch = false;
+                    }
+                },
+                dragStop: function (e, mPostion, dragObj, helper) {
+                    $(document).enableSelection();
+                    $("#log").html("dragStop:(x:" + mPostion.x + ",y:" + mPostion.y + ");dragOb:" + dragObj.attr("id") + ";<br/>" + $("#log").html());
+                }
+            }).dblclick(function () {
+                $("#log").html("双击:" + $(this).attr("id") + ";<br/>" + $("#log").html());
+            });
+            $(".dropArea").wbDropable({
+                dropMatch: function (key) {
+                    return true;
+                    if (key == "im1")
+                        return true;
+                    else
+                        return false;
+                },
+                inDropArea: function (e, dragObj, dropObj) {
+                    if (!this.inDropLog) {
+                        $("#log").html("in(" + dragObj.attr("id") + " 进入 " + dropObj.attr("id") + ")<br/>" + $("#log").html());
+                        this.inDropLog = true;
+                    }
+                },
+                outDropArea: function (e, dragObj, dropObj) {
+                    $("#log").html("out(" + dragObj.attr("id") + " 离开  " + dropObj.attr("id") + ")<br/>" + $("#log").html());
+                    this.inDropLog = false;
+                },
+                droped: function (e, dragObj, dropObj) {
+                    dragObj.appendTo(dropObj);
+                    dragObj.css("visibility", "inherit");
+                    $("#log").html("droped(drop完成):dragOb:" + dragObj.attr("id") + ";dropObj:" + dropObj.attr("id") + ";<br/>" + $("#log").html());
+                    this.inDropLog = false;
+                }
+            });
+            $("#btnGetOption").click(function () {
+                var r = $("#item1").wbDragable("getOption");
+            });
+            $("#btnSetOption").click(function () {
+                var r = $("#item1").wbDragable("setOption", { dropMatchKey: "im1" });
+                var r1 = $("#item1").wbDragable("getOption");
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="container">
+        <div id="item1" class="dragItem">
+            通道1</div>
+        <div id="item2" class="dragItem">
+            通道2</div>
+        <div id="item3" class="dragItem">
+            通道3</div>
+    </div>
+    <div id="dropContainer">
+        <div id="dropArea1" class="dropArea">
+        </div>
+        <div id="dropArea2" class="dropArea">
+        </div>
+        <div id="dropArea3" class="dropArea">
+        </div>
+    </div>
+    <input id="btnGetOption" type="button" value="获得参数" />
+    <input id="btnSetOption" type="button" value="设置参数" />
+    <div id="log">
+    </div>
+</body>
+</html>
